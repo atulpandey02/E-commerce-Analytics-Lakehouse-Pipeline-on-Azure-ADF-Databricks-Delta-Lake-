@@ -28,26 +28,55 @@ This project implements a **data lakehouse pipeline** for **E-commerce analytics
 
 The pipeline follows a **two-zone Azure Data Lake** + **Medallion Architecture (Bronze → Silver → Gold)** pattern:
 
-### **1️⃣ Ingestion – Bronze Layer**
-- **Landing Zone 1 (LZ1):** Stores **raw datasets** (`users`, `buyers`, `sellers`, `countries`).
-- **Triggers:**
-  - **Event-based** (Blob Event Trigger) for **users** → near real-time ingestion.
-  - **Scheduled weekly** for reference data (`buyers`, `sellers`, `countries`).
-- **Post-ingestion:** Raw files moved to **Landing Zone 2 / to_process_data**.
+### 1. Ingestion Layer (Bronze)
+- **Source**: E-commerce datasets from data.world
+- **Trigger Types**:
+  - Event-based for user data (real-time processing)
+  - Weekly scheduled for reference data (buyers, sellers, countries)
+- **Storage**: Raw parquet files stored in Delta format with minimal processing
+- **Location**: `/mnt/lz2/delta/tables/bronze/`
 
 ---
 
-### **2️⃣ Transformation – Silver & Gold Layers**
-- **Bronze → Silver:**
-  - Data cleaning, schema enforcement, validation, deduplication.
-  - Integration with reference data.
-- **Silver → Gold:**
-  - Aggregations, enrichment, and creating **business-ready fact tables**.
-  - Example: `ecom_one_big_table` with user, buyer/seller, and country insights.
+### 2. Transformation Layer (Silver)
+Comprehensive data cleaning and standardization:
+
+**Users Table Transformations:**
+- Country code normalization to uppercase
+- Language mapping (EN → ENGLISH, FR → FRENCH)
+- Gender standardization and data entry error correction
+- Civility title cleaning using regex patterns
+- Account age categorization (New, Intermediate, Experienced)
+- Boolean type casting for app usage indicators
+- Social metrics data type optimization
+
+**Buyers Table Transformations:**
+- Integer and decimal type casting for metrics
+- Country name standardization with proper casing
+- Female-to-male buyer ratio calculations
+- Wishlist-to-purchase ratio analysis
+- High engagement flagging based on purchase behavior
+
+**Sellers Table Transformations:**
+- Comprehensive data type casting for all metrics
+- Seller categorization by volume (Small, Medium, Large)
+- Performance indicators calculation
+- Pass rate analysis and missing value handling
+
+**Countries Table Transformations:**
+- Seller performance ratio calculations
+- Gender distribution analysis
+- Activity level categorization based on offline days
+- High-performance country identification
 
 ---
+### 3. Analytics Layer (Gold)
+- **One Big Table (OBT)**: Comprehensive joined dataset combining all entities
+- **Business Metrics**: Pre-calculated KPIs and ratios
+- **Optimized Structure**: Analytics-ready format for fast querying
 
-### **3️⃣ Storage – Delta Lake**
+---
+### 4. Storage – Delta Lake**
 - All layers stored in **Delta format** for:
   - **ACID transactions** & **schema enforcement**.
   - **Versioning & Time Travel**.
@@ -55,7 +84,7 @@ The pipeline follows a **two-zone Azure Data Lake** + **Medallion Architecture (
 
 ---
 
-### **4️⃣ Consumption – Analytics**
+### 5. Consumption – Analytics**
 - **Databricks SQL** queries on Gold tables.
 - **Interactive dashboards** with:
   - Filters (e.g., Country, Date)
