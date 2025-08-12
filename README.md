@@ -22,6 +22,7 @@ This project implements a **data lakehouse pipeline** for **E-commerce analytics
 
 ![E-Commerce Data Pipeline Architecture](images/architecture.png)
 
+---
 
 ## 🔄 Workflow Overview
 
@@ -69,12 +70,14 @@ Comprehensive data cleaning and standardization:
 - High-performance country identification
 
 ---
+
 ### 3. Analytics Layer (Gold)
 - **One Big Table (OBT)**: Comprehensive joined dataset combining all entities
 - **Business Metrics**: Pre-calculated KPIs and ratios
 - **Optimized Structure**: Analytics-ready format for fast querying
 
 ---
+
 ### 4. Storage – Delta Lake**
 - All layers stored in **Delta format** for:
   - **ACID transactions** & **schema enforcement**.
@@ -89,6 +92,7 @@ Comprehensive data cleaning and standardization:
   - Filters (e.g., Country, Date)
   - KPIs
   - Charts for Buyers, Sellers, Products Sold
+
 ---
 
 ## Automation & Orchestration
@@ -100,6 +104,18 @@ Comprehensive data cleaning and standardization:
 - **Error Handling & Monitoring**
   - ADF alerts for failed runs.
   - Delta ACID transactions prevent partial writes.
+
+---
+
+## 📷 Screenshots & Workflow Proof
+
+### 1. Azure Data Factory Pipeline
+![ADF Pipeline](images/adf_pipeline.png)
+Event-triggered and scheduled pipelines orchestrating data ingestion from `data.world` to Azure Data Lake.
+
+### 2. Databricks Job Run Success
+![Databricks Job Success](images/job_success.png)
+Successful run showing all tasks completed without errors.
 
 ---
 
@@ -153,7 +169,9 @@ configs = {
     "fs.azure.account.oauth2.client.endpoint": "https://login.microsoftonline.com/your_tenant_id/oauth2/token"
 }
 ```
+
 ---
+
 ## 📊 Data Schema
 
 ### Users Table (Silver Layer)
@@ -179,6 +197,7 @@ configs = {
 | high_engagement | boolean | High engagement flag |
 
 ---
+
 ## Repository Structure
 ```
 ├── notebooks/                # Databricks notebooks for ETL
