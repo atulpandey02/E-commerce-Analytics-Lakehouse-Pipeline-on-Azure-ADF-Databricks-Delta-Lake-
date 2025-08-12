@@ -6,7 +6,6 @@
 ![Delta Lake](https://img.shields.io/badge/Delta%20Lake-003366?style=for-the-badge&logo=delta&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-
 ## Overview
 This project implements a **data lakehouse pipeline** for **E-commerce analytics** using Azure services and the **Medallion Architecture** (Bronze → Silver → Gold). The pipeline ingests raw datasets, incrementally refines them into analytics-ready data, and visualizes insights using dashboards.
 
@@ -105,6 +104,7 @@ Comprehensive data cleaning and standardization:
 ---
 
 ## Example SQL Queries
+
 ```sql
 -- Top 5 Countries by Number of Buyers
 SELECT Country, COUNT(DISTINCT BuyerID) AS TotalBuyers
@@ -123,6 +123,62 @@ GROUP BY Country;
 
 ---
 
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Azure Storage Configuration
+AZURE_STORAGE_ACCOUNT=your_storage_account
+AZURE_STORAGE_CONTAINER=landing-zone-2
+AZURE_CLIENT_ID=your_client_id
+AZURE_CLIENT_SECRET=your_client_secret
+AZURE_TENANT_ID=your_tenant_id
+
+# Databricks Configuration
+DATABRICKS_HOST=your_databricks_host
+DATABRICKS_TOKEN=your_access_token
+```
+---
+
+### Mount Configuration
+The pipeline uses Azure Data Lake Storage mounting for efficient data access:
+
+```python
+# Storage mount configuration in Databricks
+configs = {
+    "fs.azure.account.auth.type": "OAuth",
+    "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
+    "fs.azure.account.oauth2.client.id": "your_client_id",
+    "fs.azure.account.oauth2.client.secret": "your_client_secret",
+    "fs.azure.account.oauth2.client.endpoint": "https://login.microsoftonline.com/your_tenant_id/oauth2/token"
+}
+```
+---
+## 📊 Data Schema
+
+### Users Table (Silver Layer)
+| Column | Type | Description |
+|--------|------|-------------|
+| identifier | string | Unique user identifier |
+| country | string | User country (normalized) |
+| gender | string | User gender (standardized) |
+| language_full | string | Full language name |
+| account_age_group | string | Account maturity category |
+| hasAnyApp | boolean | Mobile app usage indicator |
+| socialNbFollowers | integer | Social media followers count |
+| user_descriptor | string | Combined user profile string |
+
+### Buyers Table (Silver Layer)
+| Column | Type | Description |
+|--------|------|-------------|
+| country | string | Country name |
+| buyers | integer | Total buyers count |
+| femalebuyers | integer | Female buyers count |
+| malebuyers | integer | Male buyers count |
+| female_to_make_ratio | decimal | Gender distribution ratio |
+| high_engagement | boolean | High engagement flag |
+
+---
 ## Repository Structure
 ```
 ├── notebooks/                # Databricks notebooks for ETL
