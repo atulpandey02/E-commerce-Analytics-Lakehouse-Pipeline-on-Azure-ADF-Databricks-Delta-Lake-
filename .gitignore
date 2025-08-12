@@ -1,0 +1,21 @@
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs / temp
+logs/
+*.log
+
+# Databricks exports
+*.dbc
