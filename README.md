@@ -21,34 +21,46 @@ This project implements a **data lakehouse pipeline** for **E-commerce analytics
 
 ## Architecture
 
-![E-Commerce Data Pipeline Architecture](images/architecture_diagram.png)
+![E-Commerce Data Pipeline Architecture](architecture.png)
 
 
-### Workflow:
-The pipeline uses **two ADLS containers**:
-- **Landing Zone 1 (LZ1)** – Stores **raw data**.
-- **Landing Zone 2 (LZ2)** – Stores **to_process_data**, **processed_data**, and **Delta tables**.
+## 🔄 Workflow Overview
 
-1. **Ingestion (Bronze Layer)**
-   - ADF ingests raw datasets: `users`, `buyers`, `sellers`, `countries`.
-   - Event-based trigger for `users` dataset (real-time updates).
-   - Weekly schedule trigger for reference datasets (`buyers`, `sellers`, `countries`).
-   - Files are moved to **LZ2/to_process_data** after ingestion.
+The pipeline follows a **two-zone Azure Data Lake** + **Medallion Architecture (Bronze → Silver → Gold)** pattern:
 
-2. **Transformation (Silver & Gold Layers)**
-   - Databricks processes `to_process_data` files through Bronze → Silver → Gold stages.
-   - **Bronze:** Raw format ingestion.
-   - **Silver:** Data cleaning, validation, deduplication, and integration.
-   - **Gold:** Aggregated, business-friendly tables ready for analytics.
+### **1️⃣ Ingestion – Bronze Layer**
+- **Landing Zone 1 (LZ1):** Stores **raw datasets** (`users`, `buyers`, `sellers`, `countries`).
+- **Triggers:**
+  - **Event-based** (Blob Event Trigger) for **users** → near real-time ingestion.
+  - **Scheduled weekly** for reference data (`buyers`, `sellers`, `countries`).
+- **Post-ingestion:** Raw files moved to **Landing Zone 2 / to_process_data**.
 
-3. **Storage (Delta Lake)**
-   - Data stored in Delta format for ACID transactions and versioning.
-   - Optimized for fast reads in analytics.
+---
 
-4. **Consumption & Analytics**
-   - Databricks SQL queries on Gold tables.
-   - Dashboard with filters, KPIs, and charts.
+### **2️⃣ Transformation – Silver & Gold Layers**
+- **Bronze → Silver:**
+  - Data cleaning, schema enforcement, validation, deduplication.
+  - Integration with reference data.
+- **Silver → Gold:**
+  - Aggregations, enrichment, and creating **business-ready fact tables**.
+  - Example: `ecom_one_big_table` with user, buyer/seller, and country insights.
 
+---
+
+### **3️⃣ Storage – Delta Lake**
+- All layers stored in **Delta format** for:
+  - **ACID transactions** & **schema enforcement**.
+  - **Versioning & Time Travel**.
+- Optimized for **fast analytics**.
+
+---
+
+### **4️⃣ Consumption – Analytics**
+- **Databricks SQL** queries on Gold tables.
+- **Interactive dashboards** with:
+  - Filters (e.g., Country, Date)
+  - KPIs
+  - Charts for Buyers, Sellers, Products Sold
 ---
 
 ## Automation & Orchestration
