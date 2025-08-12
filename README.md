@@ -21,7 +21,7 @@ This project implements a **data lakehouse pipeline** for **E-commerce analytics
 
 ## Architecture
 
-![E-Commerce Data Pipeline Architecture](architecture.png)
+![E-Commerce Data Pipeline Architecture](images/architecture.png)
 
 
 ## 🔄 Workflow Overview
