@@ -5,7 +5,7 @@
 ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-E25A1C?style=for-the-badge&logo=apache-spark&logoColor=white)
 ![Delta Lake](https://img.shields.io/badge/Delta%20Lake-003366?style=for-the-badge&logo=delta&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Architecture Diagram](images/architecture.png)
+
 
 ## Overview
 This project implements a **data lakehouse pipeline** for **E-commerce analytics** using Azure services and the **Medallion Architecture** (Bronze → Silver → Gold). The pipeline ingests raw datasets, incrementally refines them into analytics-ready data, and visualizes insights using dashboards.
@@ -19,12 +19,16 @@ This project implements a **data lakehouse pipeline** for **E-commerce analytics
 
 ---
 
-## Architecture & Workflow
+## Architecture
+
+![E-Commerce Data Pipeline Architecture](images/architecture_diagram.png)
+
+
+### Workflow:
 The pipeline uses **two ADLS containers**:
 - **Landing Zone 1 (LZ1)** – Stores **raw data**.
 - **Landing Zone 2 (LZ2)** – Stores **to_process_data**, **processed_data**, and **Delta tables**.
 
-### Workflow:
 1. **Ingestion (Bronze Layer)**
    - ADF ingests raw datasets: `users`, `buyers`, `sellers`, `countries`.
    - Event-based trigger for `users` dataset (real-time updates).
